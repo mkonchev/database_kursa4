@@ -1,17 +1,14 @@
 if __name__ == "__main__":
     from Connection.DBConnection import DatabaseConnection
+    from Authorization.Check_password import Authenticator
+    from GUI.auth_window import LoginApp
     from Tables.groups_table import Groups
-    from Tables.marks_table import Marks
-    from Tables.people_table import People
-    from Tables.subjects_table import Subjects
+    import tkinter as tk
+    from tkinter import messagebox
 
     db = DatabaseConnection("Connection/db_config.ini")
-    db.connect()
-    try:
-        groups = Groups(db.connection)
+    authenticator = Authenticator("Connection/db_config.ini")
+    root = tk.Tk()
+    app = LoginApp(root, authenticator)
+    root.mainloop()
 
-        print(groups.get_all_groups())
-
-        print()
-    finally:
-        db.close()
