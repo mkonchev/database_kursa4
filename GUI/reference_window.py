@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from Connection.DBConnection import DatabaseConnection
-from GUI.rec_forv import RecordForm
+from GUI.record_form import RecordForm
 
 
 class ReferencesWindowAdmin:

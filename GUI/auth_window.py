@@ -1,8 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
-from GUI.admin_features import AdminFeaturesWindow
 from GUI.reference_window import ReferencesWindowAdmin
-from GUI.user_features import UserFeaturesWindow
+from GUI.reference_window_usr import ReferencesWindowUser
 
 
 class LoginApp:
@@ -73,11 +72,37 @@ def open_admin_features(parent):
 
 
 def open_user_features(parent):
-    user_window = tk.Toplevel(parent)
-    user_window.title("User Features")
-    user_window.geometry("400x300")
-    tk.Label(user_window, text="User Features Window", font=("Arial", 14)).pack(pady=20)
-    tk.Button(user_window, text="Close", command=user_window.destroy).pack(pady=20)
+    table_selection_window = tk.Toplevel(parent)
+    table_selection_window.title("Select Table to View")
+
+    table_selection_window.geometry("300x400")
+
+    tk.Label(table_selection_window,
+             text="Select a table to see:",
+             font=("Arial", 14)).pack(pady=20)
+
+    tables = ["people", "groups", "subjects", "marks"]
+    selected_table = tk.StringVar(value=tables[0])
+
+    table_dropdown = ttk.Combobox(table_selection_window,
+                                  values=tables,
+                                  textvariable=selected_table,
+                                  state="readonly")
+    table_dropdown.pack(pady=10)
+
+    # Кнопка подтверждения выбора
+    tk.Button(
+        table_selection_window,
+        text="Open",
+        command=lambda: open_table_window_usr(parent, selected_table.get(), table_selection_window)
+    ).pack(pady=10)
+
+    # Кнопка закрытия окна
+    tk.Button(
+        table_selection_window,
+        text="Cancel",
+        command=table_selection_window.destroy
+    ).pack(pady=5)
 
 
 def open_main_window(role):
@@ -98,3 +123,8 @@ def open_main_window(role):
 def open_table_window(parent, table_name, selection_window):
     selection_window.destroy()  # Закрытие окна выбора
     ReferencesWindowAdmin(parent, table_name)
+
+
+def open_table_window_usr(parent, table_name, selection_window):
+    selection_window.destroy()  # Закрытие окна выбора
+    ReferencesWindowUser(parent, table_name)

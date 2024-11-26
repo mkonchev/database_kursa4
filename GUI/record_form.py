@@ -4,8 +4,6 @@ from tkinter import ttk, messagebox
 
 import psycopg2
 
-from Connection.DBConnection import DatabaseConnection
-
 
 class RecordForm:
     def __init__(self, parent, table_name, columns, mode, record_data=None, on_close=None):
@@ -95,77 +93,3 @@ class RecordForm:
             'password': config.get('database', 'password'),
             'database': config.get('database', 'database'),
         }
-
-#         self.table_name = table_name
-#         self.columns = columns
-#         self.mode = mode
-#         self.record_data = record_data
-#         self.on_close = on_close
-#
-#         self.window = tk.Toplevel(parent)
-#         self.window.title("Add Record" if mode == "add" else "Edit Record")
-#         self.window.geometry("400x300")
-#
-#         self.entries = {}
-#
-#         # Создание полей ввода
-#         for i, column in enumerate(columns):
-#             tk.Label(self.window, text=column.capitalize()).grid(row=i, column=0, padx=10, pady=5, sticky="w")
-#             entry = tk.Entry(self.window)
-#             entry.grid(row=i, column=1, padx=10, pady=5, sticky="w")
-#
-#             if mode == "edit" and record_data:
-#                 entry.insert(0, record_data.get(column, ""))  # Заполняем поле текущими значениями
-#
-#             self.entries[column] = entry
-#
-#         # Кнопки "Save" и "Cancel"
-#         tk.Button(self.window, text="Save", command=self.save).grid(row=len(columns), column=0, padx=10, pady=10)
-#         tk.Button(self.window, text="Cancel", command=self.window.destroy).grid(row=len(columns), column=1, padx=10,
-#                                                                                 pady=10)
-#
-#
-# def load_record(self):
-#     """Загрузка данных записи для редактирования."""
-#     db = DatabaseConnection()
-#     db.connect()
-#
-#     try:
-#         cursor = db.connection.cursor()
-#         query = f"SELECT name FROM {self.table_name} WHERE id = %s;"
-#         cursor.execute(query, (self.record_id,))
-#         record = cursor.fetchone()
-#         if record:
-#             self.name_entry.insert(0, record[0])
-#     except Exception as e:
-#         messagebox.showerror("Error", f"Failed to load record: {e}")
-#     finally:
-#         db.close()
-#
-#
-# def save_record(self):
-#     name = self.name_entry.get()
-#     if not name.strip():
-#         messagebox.showwarning("Warning", "Name cannot be empty!")
-#         return
-#
-#     db = DatabaseConnection()
-#     db.connect()
-#
-#     try:
-#         cursor = db.connection.cursor()
-#         if self.mode == "add":
-#             query = f"INSERT INTO {self.table_name} (name) VALUES (%s);"
-#             cursor.execute(query, (name,))
-#         elif self.mode == "edit" and self.record_id:
-#             query = f"UPDATE {self.table_name} SET name = %s WHERE id = %s;"
-#             cursor.execute(query, (name, self.record_id))
-#         db.connection.commit()
-#         messagebox.showinfo("Success", "Record saved successfully!")
-#         self.window.destroy()
-#         if self.on_close:
-#             self.on_close()
-#     except Exception as e:
-#         messagebox.showerror("Error", f"Failed to save record: {e}")
-#     finally:
-#         db.close()
