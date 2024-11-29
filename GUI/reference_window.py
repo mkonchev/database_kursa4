@@ -117,7 +117,7 @@ class ReferencesWindowAdmin:
 
         try:
             cursor = db.connection.cursor()
-            query = f"DELETE FROM {self.table_name} WHERE id = %s;"  # Учитывается, что ID - имя первичного ключа
+            query = f"DELETE FROM {self.table_name} WHERE id = %s;"
             cursor.execute(query, (record_id,))
             db.connection.commit()
             messagebox.showinfo("Success", "Record deleted successfully!")

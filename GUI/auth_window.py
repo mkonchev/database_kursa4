@@ -75,7 +75,7 @@ def open_user_features(parent):
     table_selection_window = tk.Toplevel(parent)
     table_selection_window.title("Select Table to View")
 
-    table_selection_window.geometry("300x400")
+    table_selection_window.geometry("400x600")
 
     tk.Label(table_selection_window,
              text="Select a table to see:",
@@ -103,6 +103,35 @@ def open_user_features(parent):
         text="Cancel",
         command=table_selection_window.destroy
     ).pack(pady=5)
+
+    tk.Label(table_selection_window, text="——————————", font=("Arial", 12)).pack(pady=10)
+
+    # Выпадающий список для выбора таблицы анализа
+    tk.Label(table_selection_window,
+             text="Select a table for analysis:",
+             font=("Arial", 14)).pack(pady=20)
+
+    selected_analysis_table = tk.StringVar(value=tables[0])
+
+    analysis_table_dropdown = ttk.Combobox(table_selection_window,
+                                           values=tables,
+                                           textvariable=selected_analysis_table,
+                                           state="readonly")
+    analysis_table_dropdown.pack(pady=10)
+
+    # Кнопка анализа данных
+    tk.Button(
+        table_selection_window,
+        text="Analyze",
+        command=lambda: ReferencesWindowUser(parent, selected_analysis_table.get()).show_analysis_dialog()
+    ).pack(pady=10)
+
+    # Кнопка закрытия окна
+    tk.Button(
+        table_selection_window,
+        text="Cancel",
+        command=table_selection_window.destroy
+    ).pack(pady=10)
 
 
 def open_main_window(role):
