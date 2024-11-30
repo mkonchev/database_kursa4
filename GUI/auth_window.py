@@ -108,22 +108,22 @@ def open_user_features(parent):
 
     # Выпадающий список для выбора таблицы анализа
     tk.Label(table_selection_window,
-             text="Select a table for analysis:",
+             text="Or go next to get avg results:",
              font=("Arial", 14)).pack(pady=20)
 
-    selected_analysis_table = tk.StringVar(value=tables[0])
-
-    analysis_table_dropdown = ttk.Combobox(table_selection_window,
-                                           values=tables,
-                                           textvariable=selected_analysis_table,
-                                           state="readonly")
-    analysis_table_dropdown.pack(pady=10)
+    # selected_analysis_table = tk.StringVar(value=tables[0])
+    selected_analysis_table = "people"
+    # analysis_table_dropdown = ttk.Combobox(table_selection_window,
+    #                                        values=tables,
+    #                                        textvariable=selected_analysis_table,
+    #                                        state="readonly")
+    # analysis_table_dropdown.pack(pady=10)
 
     # Кнопка анализа данных
     tk.Button(
         table_selection_window,
         text="Analyze",
-        command=lambda: ReferencesWindowUser(parent, selected_analysis_table.get()).show_analysis_dialog()
+        command=lambda: ReferencesWindowUser(parent, selected_analysis_table).show_analysis_dialog()
     ).pack(pady=10)
 
     # Кнопка закрытия окна

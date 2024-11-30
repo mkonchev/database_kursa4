@@ -38,7 +38,7 @@ class ReferencesWindowUser:
             button_frame.pack(fill=tk.X, pady=10)
 
             tk.Button(button_frame, text="Exit", command=self.window.destroy).pack(side=tk.LEFT, padx=5)
-            tk.Button(button_frame, text="AVG value", command=self.show_analysis_dialog).pack(side=tk.LEFT, padx=5)
+            tk.Button(button_frame, text="More AVG value", command=self.show_analysis_dialog).pack(side=tk.LEFT, padx=5)
 
             self.load_data()
 
