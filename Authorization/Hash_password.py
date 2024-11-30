@@ -10,4 +10,6 @@ def check_password(plain_password, hashed_password):
 
 
 print(hash_password('admin'))
+print(hash_password('user1'))
+print(hash_password('admin'))
 print(hash_password('user'))
