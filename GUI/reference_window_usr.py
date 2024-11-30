@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from Connection.DBConnection import DatabaseConnection
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 class ReferencesWindowUser:
@@ -110,59 +111,25 @@ class ReferencesWindowUser:
         try:
             cursor = db.connection.cursor()
 
-            year_condition = ""
-            if start_year and end_year:
-                year_condition = f" AND CAST(SUBSTRING(groups.name FROM '.{{4}}$') AS INT) BETWEEN {start_year} AND {end_year}"
             if filter_by == "Year":
-                query = f"""
-                SELECT SUBSTRING(groups.name FROM '.{{4}}$') AS year, AVG(marks.value) as average_grade
-                FROM marks
-                JOIN people ON marks.student_id = people.id
-                JOIN groups ON people.group_id = groups.id
-                WHERE TRUE {year_condition}
-                GROUP BY year;
-                """
+                str_ = f"""CALL get_average_grade_by_year_proc({start_year}, {end_year})"""
+                cursor.execute(str_)
             elif filter_by == "Student":
-                query = f"""
-                SELECT CONCAT(people.last_name, ' ', people.first_name) AS student, AVG(marks.value) as average_grade
-                FROM marks
-                JOIN people ON marks.student_id = people.id
-                JOIN groups ON people.group_id = groups.id
-                WHERE TRUE {year_condition}
-                GROUP BY student;
-                """
+                str_ = f"""CALL get_average_grade_by_student_proc({start_year}, {end_year})"""
+                cursor.execute(str_)
             elif filter_by == "Group":
-                query = f"""
-                SELECT groups.name AS group_name, AVG(marks.value) as average_grade
-                FROM marks
-                JOIN people ON marks.student_id = people.id
-                JOIN groups ON people.group_id = groups.id
-                WHERE TRUE {year_condition}
-                GROUP BY group_name;
-                """
+                str_ = f"""CALL get_average_grade_by_group_proc({start_year}, {end_year})"""
+                cursor.execute(str_)
             elif filter_by == "Subject":
-                query = f"""
-                SELECT subjects.name AS subject_name, AVG(marks.value) as average_grade
-                FROM marks
-                JOIN subjects ON marks.subject_id = subjects.id
-                JOIN people ON marks.student_id = people.id
-                JOIN groups ON people.group_id = groups.id
-                WHERE TRUE {year_condition}
-                GROUP BY subject_name;
-                """
+                str_ = f"""CALL get_average_grade_by_subject_proc({start_year}, {end_year})"""
+                cursor.execute(str_)
             elif filter_by == "Teacher":
-                query = f"""
-                SELECT CONCAT(people.last_name, ' ', people.first_name) AS teacher, AVG(marks.value) as average_grade
-                FROM marks
-                JOIN people ON marks.teacher_id = people.id
-                JOIN groups ON people.group_id = groups.id
-                WHERE people.type = 'P' {year_condition}
-                GROUP BY teacher;
-                """
+                str_ = f"""CALL get_average_grade_by_teacher_proc({start_year}, {end_year})"""
+                cursor.execute(str_)
             else:
                 raise ValueError("Invalid filter")
 
-            cursor.execute(query)
+            cursor.execute("SELECT * FROM temp_average_grades")
             results = cursor.fetchall()
 
             # Создание окна с таблицей
@@ -190,72 +157,46 @@ class ReferencesWindowUser:
         try:
             cursor = db.connection.cursor()
 
-            year_condition = ""
-            if start_year and end_year:
-                year_condition = f" AND CAST(SUBSTRING(groups.name FROM '.{{4}}$') AS INT) BETWEEN {start_year} AND {end_year}"
             if filter_by == "Year":
-                query = f"""
-                SELECT SUBSTRING(groups.name FROM '.{{4}}$') AS year, AVG(marks.value) as average_grade
-                FROM marks
-                JOIN people ON marks.student_id = people.id
-                JOIN groups ON people.group_id = groups.id
-                WHERE TRUE {year_condition}
-                GROUP BY year;
-                """
+                str_ = f"""CALL get_average_grade_by_year_proc({start_year}, {end_year})"""
+                cursor.execute(str_)
             elif filter_by == "Student":
-                query = f"""
-                SELECT CONCAT(people.last_name, ' ', people.first_name) AS student, AVG(marks.value) as average_grade
-                FROM marks
-                JOIN people ON marks.student_id = people.id
-                JOIN groups ON people.group_id = groups.id
-                WHERE TRUE {year_condition}
-                GROUP BY student;
-                """
+                str_ = f"""CALL get_average_grade_by_student_proc({start_year}, {end_year})"""
+                cursor.execute(str_)
             elif filter_by == "Group":
-                query = f"""
-                SELECT groups.name AS group_name, AVG(marks.value) as average_grade
-                FROM marks
-                JOIN people ON marks.student_id = people.id
-                JOIN groups ON people.group_id = groups.id
-                WHERE TRUE {year_condition}
-                GROUP BY group_name;
-                """
+                str_ = f"""CALL get_average_grade_by_group_proc({start_year}, {end_year})"""
+                cursor.execute(str_)
             elif filter_by == "Subject":
-                query = f"""
-                SELECT subjects.name AS subject_name, AVG(marks.value) as average_grade
-                FROM marks
-                JOIN subjects ON marks.subject_id = subjects.id
-                JOIN people ON marks.student_id = people.id
-                JOIN groups ON people.group_id = groups.id
-                WHERE TRUE {year_condition}
-                GROUP BY subject_name;
-                """
+                str_ = f"""CALL get_average_grade_by_subject_proc({start_year}, {end_year})"""
+                cursor.execute(str_)
             elif filter_by == "Teacher":
-                query = f"""
-                SELECT CONCAT(people.last_name, ' ', people.first_name) AS teacher, AVG(marks.value) as average_grade
-                FROM marks
-                JOIN people ON marks.teacher_id = people.id
-                JOIN groups ON people.group_id = groups.id
-                WHERE people.type = 'P' {year_condition}
-                GROUP BY teacher;
-                """
+                str_ = f"""CALL get_average_grade_by_teacher_proc({start_year}, {end_year})"""
+                cursor.execute(str_)
             else:
                 raise ValueError("Invalid filter")
 
-            cursor.execute(query)
+            cursor.execute("SELECT * FROM temp_average_grades")
             results = cursor.fetchall()
 
             labels = [row[0] for row in results]
             values = [row[1] for row in results]
 
-            plt.figure(figsize=(10, 6))
+            fig, ax = plt.subplots(figsize=(10, 6))
             plt.bar(labels, values, color="skyblue")
             plt.xlabel(filter_by.capitalize())
             plt.ylabel("Average Grade")
             plt.title(f"Average Grade by {filter_by.capitalize()}")
             plt.xticks(rotation=45)
             plt.tight_layout()
-            plt.show()
+
+            graph_window = tk.Toplevel(self.window)  # новое окно
+            graph_window.title(f"{filter_by.capitalize()} Analysis Graph")
+            graph_window.geometry("800x600")
+
+            canvas = FigureCanvasTkAgg(fig, master=graph_window)
+            canvas.draw()
+            canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
         except Exception as e:
             messagebox.showerror("Error", f"Failed to analyze data: {e}")
         finally:
